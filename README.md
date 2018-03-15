@@ -1,18 +1,19 @@
-# xmp-reader  [![NPM version](https://badge.fury.io/js/xmp-reader.svg)](http://badge.fury.io/js/xmp-reader) [![Build Status](https://travis-ci.org/shkuznetsov/xmp-reader.svg?branch=master)](https://travis-ci.org/shkuznetsov/xmp-reader)
-Extracts some commonly used XMP/RDF metadata tags from JPEG files.
-Does not pretend to be a complete metadata management tool, but allows you to extract some information other EXIF-management tools on NPM fail to retrieve.
-Was originally created only to extract a Description field baked into my JPEGs by Google's Picasa.
+# xmp-reader  [![NPM version](https://badge.fury.io/js/kopparmora-xmp-reader.svg)](http://badge.fury.io/js/kopparmora-xmp-reader) [![Build Status](https://travis-ci.org/softbrix/kopparmora-xmp-reader.svg?branch=master)](https://travis-ci.org/softbrix/kopparmora-xmp-reader)
+Extracts XMP/RDF metadata tags from JPEG files.
+Does not pretend to be a complete metadata management tool, but allows you to extract information other EXIF-management tools on NPM fail to retrieve.
+This package has been forked from [xmp-reader](https://github.com/shkuznetsov/xmp-reader) and has been modified to
+include all metadata tags it finds in an image.
 
 ## Usage
 
 To install the module add it to your project's ``package.json`` dependencies or install manually running:
 ```
-npm install xmp-reader
+npm install kopparmora-xmp-reader
 ```
 
 Then pull it in your code:
 ```javascript
-const xmpReader = require('xmp-reader');
+const xmpReader = require('kopparmora-xmp-reader');
 ```
 
 Now you can either feed it a file name:

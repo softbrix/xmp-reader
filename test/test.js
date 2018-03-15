@@ -1,21 +1,26 @@
 'use strict';
 
-var	expect = require('chai').expect,
-	fs = require('fs'),
-	xmpReader = require('../');
+const
+fs = require('fs'),
+assert = require('assert'),
+xmpReader = require('../');
 
 describe('xmp-reader', function () {
 
 	let fixture = __dirname + '/fixture/test.jpg';
 	let buffer = new Buffer(65536);
 
-	let accertData = (data, done) => {
+	let assertData = (data, done) => {
 		try {
-			expect(data.title).to.equal('Title');
-			expect(data.description).to.equal('Title');
-			expect(data.rating).to.equal(3);
-			expect(data.keywords[0]).to.equal('tag1');
-			expect(data.keywords[1]).to.equal('tag2');
+			assert.equal(data.title, 'Title');
+			assert.equal(data.description, 'Title');
+			assert.equal(data.rating, 3);
+			assert.equal(data.keywords[0], 'tag1');
+			assert.equal(data.keywords[1], 'tag2');
+			assert.equal(data.regionAreaX, 0.01),
+		  assert.equal(data.regionAreaW, 0.05),
+		  assert.equal(data.regionName, 'John Doe'),
+		  assert.equal(data.regionType, 'Face'),
 			done();
 		} catch (err) {
 			done(err);
@@ -32,29 +37,33 @@ describe('xmp-reader', function () {
 	it('should accept a file and a callback', function(done)	{
 		xmpReader.fromFile(fixture, (err, data) => {
 			if (err) done(err);
-			else accertData(data, done);
+			else assertData(data, done);
 		});
 	});
 
 	it('should accept a buffer and a callback', function(done)	{
 		xmpReader.fromBuffer(buffer, (err, data) => {
 			if (err) done(err);
-			else accertData(data, done);
+			else assertData(data, done);
 		});
 	});
 
 	it('should accept a file and return a promise', function(done)	{
 		xmpReader.fromFile(fixture).then(
-			(data) => accertData(data, done),
+			(data) => assertData(data, done),
 			(err) => done(err)
 		);
 	});
 
 	it('should accept a buffer and return a promise', function(done)	{
 		xmpReader.fromBuffer(buffer).then(
-			(data) => accertData(data, done),
+			(data) => assertData(data, done),
 			(err) => done(err)
 		);
+	});
+
+	xit('log', function()	{
+		return xmpReader.fromBuffer(buffer).then(console.log);
 	});
 
 	it('should fail if the file can not be read', function(done)	{

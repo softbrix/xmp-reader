@@ -5,25 +5,29 @@ const markerEnd = '</x:xmpmeta>';
 
 const bufferLimit = 65536;
 
-const knownTags = [
-	'MicrosoftPhoto:LastKeywordXMP',
-	'MicrosoftPhoto:LastKeywordIPTC',
-	'MicrosoftPhoto:Rating',
-	'Iptc4xmpCore:Location',
-	'xmp:Rating',
-	'dc:title',
-	'dc:description',
-	'dc:creator',
-	'dc:rights',
-	'cc:attributionName'
-];
-
+/* The text-content of these tags are ignored in the output */
 const envelopeTags = [
+	'x:xmpmeta',
+	'rdf:RDF',
+	'rdf:Description',
 	'rdf:Bag',
 	'rdf:Alt',
 	'rdf:Seq',
-	'rdf:li'
+	'rdf:li',
+	'mwg-rs:RegionList'
 ];
+
+/* Map the different meta keys to a single definition */
+const keyTransform = {
+	'mwg-rs:Regions': 'region',
+	'MicrosoftPhoto:LastKeywordXMP': 'keywords',
+	'MicrosoftPhoto:LastKeywordIPTC': 'keywords',
+	'dc:subject': 'keywords',
+	'MicrosoftPhoto:Rating': 'mRating',
+	'cc:attributionName': 'attribution',
+	'xmpRights:UsageTerms': 'terms',
+	'dc:rights': 'terms'
+}
 
 let fs = require('fs');
 
@@ -39,57 +43,70 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 				let parser = require('sax').parser(true);
 				let nodeName;
 
+        let nodePath = [];
+
 				parser.onerror = (err) => reject(err);
 				parser.onend = () => resolve(data);
 
 				parser.onopentag = function (node) {
-					if (knownTags.indexOf(node.name) != -1) nodeName = node.name;
-					else if (envelopeTags.indexOf(node.name) == -1) nodeName = null;
+          nodeName = node.name;
+          nodePath.push(node.name);
 				};
 
-				parser.ontext = function(text) {
-					if (text.trim() != '') switch (nodeName) {
-						case 'MicrosoftPhoto:LastKeywordXMP':
-						case 'MicrosoftPhoto:LastKeywordIPTC':
-							if (!data.raw[nodeName]) data.raw[nodeName] = [text];
-							else if (data.raw[nodeName].indexOf(text) == -1) data.raw[nodeName].push(text);
-							if (!data.keywords) data.keywords = [text];
-							else if (data.keywords.indexOf(text) == -1) data.keywords.push(text);
-							break;
-						case 'dc:title':
-							data.raw[nodeName] = text;
-							data.title = text;
-							break;
-						case 'dc:description':
-							data.raw[nodeName] = text;
-							data.description = text;
-							break;
-						case 'xmp:Rating':
-							data.raw[nodeName] = text;
-							data.rating = parseInt(text);
-							break;
-						case 'MicrosoftPhoto:Rating':
-							data.raw[nodeName] = text;
-							data.rating = Math.floor(parseInt(text) + 12 / 25) + 1;
-							break;
-						case 'Iptc4xmpCore:Location':
-							data.raw[nodeName] = text;
-							data.location = text;
-							break;
-						case 'dc:creator':
-							data.raw[nodeName] = text;
-							data.creator = text;
-							break;
-						case 'cc:attributionName':
-							data.raw[nodeName] = text;
-							data.attribution = text;
-							break;
-						case 'xmpRights:UsageTerms':
-						case 'dc:rights':
-							data.raw[nodeName] = text;
-							data.terms = text;
-							break;
+        parser.onclosetag = function (node) {
+          nodePath.pop();
+        };
+
+				function getLastKeyFromPath(path) {
+					return path.filter(p => envelopeTags.indexOf(p) < 0).pop();
+				};
+
+				function getKeyFromPath(path) {
+					return path
+						.filter(p => envelopeTags.indexOf(p) < 0)
+						.map(p => keyTransform[p] || p)
+						.map(p => p.indexOf(':') >= 0 ? p.split(':')[1] : p)
+						.map((p, i) => i == 0 ? lowercaseFirstLitter(p) : capitalizeFirstLetter(p))
+						.join('');
+				}
+
+				function updateData(oldData, newData) {
+					if(oldData === undefined) {
+						return newData;
+					} else {
+						if(!Array.isArray(oldData)) {
+							return [oldData, newData];
+						}
+						oldData.push(newData);
+						return oldData;
 					}
+				}
+
+				parser.ontext = function(text) {
+					if (text.trim() != '')  {
+						var value;
+						switch(nodeName) {
+							case 'stArea:x':
+							case 'stArea:y':
+							case 'stArea:w':
+							case 'stArea:h':
+								value = parseFloat(text);
+								break;
+							case 'xmp:Rating':
+								value = parseInt(text);
+								break;
+							case 'MicrosoftPhoto:Rating':
+								value = Math.floor((parseInt(text) + 12) / 25) + 1;
+								break;
+							default:
+								value = text
+						}
+						let rawKey = getLastKeyFromPath(nodePath);
+						data.raw[rawKey] = updateData(data.raw[rawKey], value);
+
+						let key = getKeyFromPath(nodePath);
+						data[key] = updateData(data[key], value);
+        	}
 				};
 
 				parser.write(xmlBuffer.toString('utf-8', 0, xmlBuffer.length)).close();
@@ -121,5 +138,14 @@ let promiseToCallback = (promise, callback) => {
 	return promise;
 };
 
+function capitalizeFirstLetter(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lowercaseFirstLitter(string) {
+	return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
 module.exports.fromBuffer = (buffer, callback) => promiseToCallback(bufferToPromise(buffer), callback);
 module.exports.fromFile = (filename, callback) => promiseToCallback(fileToBuffer(filename).then(bufferToPromise), callback);
+module.exports.fileToBuffer = fileToBuffer;
