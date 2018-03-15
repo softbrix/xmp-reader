@@ -1,3 +1,11 @@
 language: node_js
 node_js:
-  - "4.3.2"
+- 4.3.2
+deploy:
+  provider: npm
+  email: andreas@softbrix.se
+  api_key:
+    secure: r8i+HoCa+YW2cwTRlv3dn77W3YUaVxDKR0Sw+B28AwT8gQODI4tAkZU+W3NZTymXWCGzdO4tA6K620zryGzKo0dSrvJRfYzBQyeXpn9Q2O/n2Jd/XxZPD7QHPB+ADD+V8j9IRshhIQ3eRGrvwSj5s42/flGVWdp0Gux0EKlRvv4eZFh5vpET+/svxlIKAasTBQOeGq60dUbiM6oM6O2/jvqEvetiMmZuGEGPi1s9/Mq+OxHHCjM35sYM+oMhNtzuJivil5jVt9v52W3ce/R+D1D8w+1lAD9xCph4ichcnndFlDHveR7SLQE2RixHXZOtW4jss/fDl8D1R6U238ZFd/Qlo7zZvAwBEc6GM36H7RjvRyP/FGWXemeC79M0c5911LhXoIDCLo3cf+ciiFTzUpBsMm1JJ55jnUP/DWT/MgD1eGh2c3zmcO++rg7kzWvonfdykPGBhhB/PPFuj6+nMc8PY9HiMb7Yy+QSWMF+Ns1c4QIvGiSQalHZfFeZoNcoVSLFagmO4HcJka48gTEkH3NqFkB6jp5mAcbe04Vgcy/S+bq9CPRO7VlDGQlRLdF827OKX1xgeRnsgMPmNocOxHAG3qYL1mNHUl9C6FHJFwRLFlabu4zgOiiUlcjZz5luvwOacbuyaM0zUEhgVrvil34vRSHCji2DqTdsqPxSoos=
+  on:
+    tags: true
+    repo: softbrix/xmp-reader
