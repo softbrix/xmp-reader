@@ -3,8 +3,6 @@
 const markerBegin = '<x:xmpmeta';
 const markerEnd = '</x:xmpmeta>';
 
-const bufferLimit = 65536;
-
 /* The text-content of these tags are ignored in the output */
 const envelopeTags = [
 	'x:xmpmeta',
@@ -118,15 +116,9 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 });
 
 let fileToBuffer = (file) => new Promise((resolve, reject) => {
-	fs.open(file, 'r', (err, fd) => {
-		if (err) reject(err);
-		else {
-			let buffer = new Buffer(bufferLimit);
-			fs.read(fd, buffer, 0, bufferLimit, 0, (err, bytesRead, buffer) => {
-				if (err) reject(err);
-				else resolve(buffer);
-			});
-		}
+	fs.readFile(file, (err, data) => {
+	  if (err) return reject(err);
+	  resolve(data);
 	});
 });
 
