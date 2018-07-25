@@ -1,6 +1,6 @@
 {
   "name": "kopparmora-xmp-reader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Extracts basic XMP/RDF metadata from JPEG files",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,9 @@
   "contributor": "Alexander Kuznetsov",
   "repository": {
     "type": "git",
-    "url": "https://github.com/softbrix/kopparmora-xmp-reader.git"
+    "url": "https://github.com/softbrix/xmp-reader.git"
   },
-  "homepage": "https://github.com/softbrix/kopparmora-xmp-reader",
+  "homepage": "https://github.com/softbrix/xmp-reader",
   "license": "MIT",
   "engines": {
     "node": ">= 4.3.2"
@@ -23,7 +23,8 @@
     "xmp",
     "rdf",
     "picasa",
-    "metadata"
+    "metadata",
+    "rating"
   ],
   "devDependencies": {
     "mocha": "^3.1.2"
