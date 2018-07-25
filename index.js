@@ -32,7 +32,9 @@ let fs = require('fs');
 let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 	if (!Buffer.isBuffer(buffer)) reject('Not a Buffer');
 	else {
-		let data = {raw: {}};
+		let data = {
+			raw: {}
+		};
 		let offsetBegin = buffer.indexOf(markerBegin);
 		if (offsetBegin) {
 			let offsetEnd = buffer.indexOf(markerEnd);
@@ -41,19 +43,19 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 				let parser = require('sax').parser(true);
 				let nodeName;
 
-        let nodePath = [];
+				let nodePath = [];
 
 				parser.onerror = (err) => reject(err);
 				parser.onend = () => resolve(data);
 
 				parser.onopentag = function (node) {
-          nodeName = node.name;
-          nodePath.push(node.name);
+					nodeName = node.name;
+					nodePath.push(node.name);
 				};
 
-        parser.onclosetag = function (node) {
-          nodePath.pop();
-        };
+				parser.onclosetag = function (node) {
+					nodePath.pop();
+				};
 
 				function getLastKeyFromPath(path) {
 					return path.filter(p => envelopeTags.indexOf(p) < 0).pop();
@@ -69,10 +71,10 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 				}
 
 				function updateData(oldData, newData) {
-					if(oldData === undefined) {
+					if (oldData === undefined) {
 						return newData;
 					} else {
-						if(!Array.isArray(oldData)) {
+						if (!Array.isArray(oldData)) {
 							return [oldData, newData];
 						}
 						oldData.push(newData);
@@ -80,10 +82,10 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 					}
 				}
 
-				parser.ontext = function(text) {
-					if (text.trim() != '')  {
+				parser.ontext = function (text) {
+					if (text.trim() != '') {
 						var value;
-						switch(nodeName) {
+						switch (nodeName) {
 							case 'stArea:x':
 							case 'stArea:y':
 							case 'stArea:w':
@@ -104,21 +106,19 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 
 						let key = getKeyFromPath(nodePath);
 						data[key] = updateData(data[key], value);
-        	}
+					}
 				};
 
 				parser.write(xmlBuffer.toString('utf-8', 0, xmlBuffer.length)).close();
-			}
-			else resolve(data);
-		}
-		else resolve(data);
+			} else resolve(data);
+		} else resolve(data);
 	}
 });
 
 let fileToBuffer = (file) => new Promise((resolve, reject) => {
 	fs.readFile(file, (err, data) => {
-	  if (err) return reject(err);
-	  resolve(data);
+		if (err) return reject(err);
+		resolve(data);
 	});
 });
 
