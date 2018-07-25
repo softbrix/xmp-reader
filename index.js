@@ -66,7 +66,7 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 						.filter(p => envelopeTags.indexOf(p) < 0)
 						.map(p => keyTransform[p] || p)
 						.map(p => p.indexOf(':') >= 0 ? p.split(':')[1] : p)
-						.map((p, i) => i == 0 ? lowercaseFirstLitter(p) : capitalizeFirstLetter(p))
+						.map((p, i) => i == 0 ? lowercaseFirstLetter(p) : capitalizeFirstLetter(p))
 						.join('');
 				}
 
@@ -134,7 +134,7 @@ function capitalizeFirstLetter(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function lowercaseFirstLitter(string) {
+function lowercaseFirstLetter(string) {
 	return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
