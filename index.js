@@ -1,4 +1,7 @@
 'use strict';
+const DEBUG = false;
+
+const sax = require('sax');
 
 const markerBegin = '<x:xmpmeta';
 const markerEnd = '</x:xmpmeta>';
@@ -36,11 +39,12 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 			raw: {}
 		};
 		let offsetBegin = buffer.indexOf(markerBegin);
-		if (offsetBegin) {
+		if (offsetBegin > 0) {
 			let offsetEnd = buffer.indexOf(markerEnd);
-			if (offsetEnd) {
+			if (DEBUG) console.log(offsetBegin, offsetEnd);
+			if (offsetEnd > 0) {
 				let xmlBuffer = buffer.slice(offsetBegin, offsetEnd + markerEnd.length);
-				let parser = require('sax').parser(true);
+				let parser = sax.parser(true);
 				let nodeName;
 
 				let nodePath = [];

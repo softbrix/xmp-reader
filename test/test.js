@@ -18,9 +18,9 @@ describe('xmp-reader', function () {
 			assert.equal(data.keywords[0], 'tag1');
 			assert.equal(data.keywords[1], 'tag2');
 			assert.equal(data.regionAreaX, 0.01),
-		  assert.equal(data.regionAreaW, 0.05),
-		  assert.equal(data.regionName, 'John Doe'),
-		  assert.equal(data.regionType, 'Face'),
+			assert.equal(data.regionAreaW, 0.05),
+			assert.equal(data.regionName, 'John Doe'),
+			assert.equal(data.regionType, 'Face'),
 			done();
 		} catch (err) {
 			done(err);

@@ -27,9 +27,11 @@
     "rating"
   ],
   "devDependencies": {
-    "mocha": "^3.1.2"
+    "mocha": "^5.2.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
+    "exif-reader": "^1.0.2",
     "sax": "^1.2.1"
   }
 }
