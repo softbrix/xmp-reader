@@ -2,6 +2,7 @@
 const DEBUG = false;
 
 const sax = require('sax');
+const fs = require('fs');
 
 const markerBegin = '<x:xmpmeta';
 const markerEnd = '</x:xmpmeta>';
@@ -30,8 +31,6 @@ const keyTransform = {
 	'dc:rights': 'terms'
 }
 
-let fs = require('fs');
-
 let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 	if (!Buffer.isBuffer(buffer)) reject('Not a Buffer');
 	else {
@@ -46,7 +45,6 @@ let bufferToPromise = (buffer) => new Promise((resolve, reject) => {
 				let xmlBuffer = buffer.slice(offsetBegin, offsetEnd + markerEnd.length);
 				let parser = sax.parser(true);
 				let nodeName;
-
 				let nodePath = [];
 
 				parser.onerror = (err) => reject(err);
