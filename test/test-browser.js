@@ -3,7 +3,7 @@
 const
 fs = require('fs'),
 assert = require('assert'),
-xmpReader = require('../');
+xmpReader = require('../browser.js');
 
 describe('xmp-reader', function () {
 
@@ -34,25 +34,11 @@ describe('xmp-reader', function () {
 		});
 	});
 
-	it('should accept a file and a callback', function(done)	{
-		xmpReader.fromFile(fixture, (err, data) => {
-			if (err) done(err);
-			else assertData(data, done);
-		});
-	});
-
 	it('should accept a buffer and a callback', function(done)	{
 		xmpReader.fromBuffer(buffer, (err, data) => {
 			if (err) done(err);
 			else assertData(data, done);
 		});
-	});
-
-	it('should accept a file and return a promise', function(done)	{
-		xmpReader.fromFile(fixture).then(
-			(data) => assertData(data, done),
-			(err) => done(err)
-		);
 	});
 
 	it('should accept a buffer and return a promise', function(done)	{
@@ -62,14 +48,7 @@ describe('xmp-reader', function () {
 		);
 	});
 
-	xit('log', function()	{
-		return xmpReader.fromBuffer(buffer).then(console.log);
-	});
-
-	it('should fail if the file can not be read', function(done)	{
-		xmpReader.fromFile(fixture + '__doesntexist').then(
-			(data) => done('Data returned'),
-			(err) => done()
-		);
+	it('should not have a from file method', function()	{
+		assert.equal(undefined, xmpReader.fromFile);
 	});
 });
