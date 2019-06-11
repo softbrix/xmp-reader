@@ -16,7 +16,7 @@
   "homepage": "https://github.com/softbrix/xmp-reader",
   "license": "MIT",
   "engines": {
-    "node": ">= 4.3.2"
+    "node": ">=8.0.0"
   },
   "keywords": [
     "jpeg",
